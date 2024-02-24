@@ -22,6 +22,7 @@ export const HEADERS = {
 
 export const LIMIT = 50; // max item getting per one request to the api
 export const OFFSET = 0;
+export const MIN_SEARCH_LEN = 3;
 
 export enum ROUTES {
   empty = '/',
@@ -37,15 +38,19 @@ export enum API_ACTION_TYPES {
 }
 
 export type API_PARAMS_TYPES = {
-  offset: number;
-  limit: number;
+  offset?: number;
+  limit?: number;
   ids?: string[];
+  price?: FILTER_PARAM_TYPES.price;
+  brand?: FILTER_PARAM_TYPES.brand;
+  product?: FILTER_PARAM_TYPES.product;
 };
 
 export enum FILTER_PARAM_TYPES {
+  none = '',
   price = 'price',
   brand = 'brand',
-  name = 'name',
+  product = 'product',
 }
 
 export interface IData {

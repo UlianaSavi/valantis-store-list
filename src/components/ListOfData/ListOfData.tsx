@@ -14,54 +14,31 @@ export const ListOfData = () => {
 
   return (
     <>
-      {/* <ul className="list">
-        {repos.map((el) => (
-          <li className="card" key={`${el.node.name}__${el.node.owner.login}`}>
-            <a
-              href={`${GITHUB_URL}${el.node.resourcePath}`}
-              className="card__img"
-            >
-              <img className="img" src={el.node.owner.avatarUrl} alt="Avatar" />
-            </a>
+      <ul className="list">
+        {products.map((product, i) => (
+          <li className="card" key={`${product.product}__${product.id}?${i}`}>
             <div className="card__text-wrap">
               <div className="card__text">
-                <p className="title">Repository name: </p>
-                <a
-                  className="link"
-                  href={`${GITHUB_URL}${el.node.resourcePath}`}
-                >
-                  {el.node.name}
-                </a>
+                <p className="title">Product id: </p>
+                <b>{product.id}</b>
               </div>
               <div className="card__text">
-                <p className="title">Repository link: </p>
-                <a
-                  className="link"
-                  href={`${GITHUB_URL}${el.node.resourcePath}`}
-                >
-                  {`${GITHUB_URL}${el.node.resourcePath}`}
-                </a>
+                <p className="title">Product name: </p>
+                <b>{product.product}</b>
               </div>
               <div className="card__text">
-                <p className="title">Repository author: </p>
-                <a
-                  className="link"
-                  href={`${GITHUB_URL}${el.node.owner.resourcePath}`}
-                >
-                  {`${GITHUB_URL}${el.node.owner.resourcePath}`}
-                </a>
+                <p className="title">Product price: </p>
+                <b>{product.price}</b>
               </div>
               <div className="card__text">
-                <p className="title">Repository description: </p>
-                <span>
-                  {el.node.description ? el.node.description : 'Empty'}
-                </span>
+                <p className="title">Product brand: </p>
+                <b>{product.brand?.length ? product.brand : 'Empty'}</b>
               </div>
             </div>
           </li>
         ))}
-        <div ref={containerRef} className="interceptor"></div>
-      </ul> */}
+        {/* <div ref={containerRef} className="interceptor"></div> */}
+      </ul>
     </>
   );
 };
