@@ -2,16 +2,21 @@ import md5 from 'md5';
 
 export const API_URL = 'http://api.valantis.store:40000';
 
-const CURR_TIMESTAMP_DATE = new Date()
-  .toISOString()
-  .split('')
-  .filter((item) => item !== '-');
+const CURR_MONTH =
+  String(Number(new Date().getMonth() + 1)).length === 1
+    ? `0${Number(new Date().getMonth() + 1)}`
+    : Number(new Date().getMonth() + 1);
+const CURR_DAY =
+  String(Number(new Date().getDate())).length === 1
+    ? `0${Number(new Date().getDate())}`
+    : Number(new Date().getDate());
+const CURR_YEAR = new Date().getFullYear();
+const CURR_TIMESTAMP_DATE = `${CURR_YEAR}${CURR_MONTH}${CURR_DAY}`;
 
 const PASSWORD = 'Valantis';
 
 export const HEADERS = {
   'Content-type': 'application/json; charset=UTF-8',
-  // 'X-Auth-Token': md5(`${PASSWORD}_${CURR_TIMESTAMP_DATE}`),
   'X-Auth': md5(`${PASSWORD}_${CURR_TIMESTAMP_DATE}`),
 };
 

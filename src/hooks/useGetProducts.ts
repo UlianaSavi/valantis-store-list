@@ -20,7 +20,7 @@ export const useGetProducts = () => {
     limit: LIMIT,
   });
 
-  // TODO как будешь сетить API_ACTION_TYPES.filter ?
+  // TODO как будешь сетить API_ACTION_TYPES.filter ? В целом полумай над фильтрацией - в ту ли сторону ты движешься.
   const body = {
     action: actionType,
     params: params, // TODO: типизировать params
@@ -41,7 +41,7 @@ export const useGetProducts = () => {
         setActionType(API_ACTION_TYPES.get_items);
       })
       .catch((err: Error) => {
-        console.log(err.message);
+        console.log(err.cause, err.message);
       });
   }, []);
 
@@ -64,5 +64,5 @@ export const useGetProducts = () => {
     }
   }, [actionType]);
 
-  return { products };
+  return { products, setActionType };
 };
