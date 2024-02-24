@@ -20,10 +20,9 @@ export const useGetProducts = () => {
     limit: LIMIT,
   });
 
-  // TODO как будешь сетить API_ACTION_TYPES.filter ? В целом полумай над фильтрацией - в ту ли сторону ты движешься.
   const body = {
     action: actionType,
-    params: params, // TODO: типизировать params
+    params: params,
   };
 
   const settings = {
@@ -33,16 +32,17 @@ export const useGetProducts = () => {
   };
 
   useEffect(() => {
-    fetch(API_URL, settings)
-      .then((response) => response.json())
-      .then((data: string[]) => {
-        console.log('DATA: ', data);
-        setProductsIds(data);
+    (async () => {
+      try {
+        const response = await fetch(API_URL, settings);
+        const idsArr: { result: string[] } = await response.json();
+        console.log('idsArr', idsArr);
+        setProductsIds(idsArr.result);
         setActionType(API_ACTION_TYPES.get_items);
-      })
-      .catch((err: Error) => {
-        console.log(err.cause, err.message);
-      });
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -52,15 +52,18 @@ export const useGetProducts = () => {
         limit: LIMIT,
         ids: productsIds,
       });
-      fetch(API_URL, settings)
-        .then((response) => response.json())
-        .then((data: IProduct[]) => {
-          console.log('DATA: ', data);
-          setProducts(data);
-        })
-        .catch((err: Error) => {
-          console.log(err.message);
-        });
+      if (params.ids) {
+        (async () => {
+          try {
+            const response = await fetch(API_URL, settings);
+            const data: { result: IProduct[] } = await response.json();
+            console.log('DATA: ', data);
+            setProducts(data.result);
+          } catch (error) {
+            console.error('Error:', error);
+          }
+        })();
+      }
     }
   }, [actionType]);
 
