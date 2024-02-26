@@ -10,7 +10,7 @@ export const Form = () => {
   );
   const [, setSearchParams] = useSearchParams();
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
     if (
       query.length >= MIN_SEARCH_LEN &&
@@ -34,9 +34,9 @@ export const Form = () => {
     <form className="form">
       <input
         className="form__input input"
-        type="text"
+        type={searchType === FILTER_PARAM_TYPES.price ? 'number' : 'text'}
         placeholder="Enter repo name for search"
-        onChange={onChange}
+        onChange={onSearchChange}
       />
       <label htmlFor="select">Choose field searching type:</label>
       <select onChange={onSearchTypeSelect} name="select" id="select">

@@ -42,9 +42,9 @@ export type API_PARAMS_TYPES = {
   offset?: number;
   limit?: number;
   ids?: string[];
-  price?: FILTER_PARAM_TYPES.price;
-  brand?: FILTER_PARAM_TYPES.brand;
-  product?: FILTER_PARAM_TYPES.product;
+  price?: number;
+  brand?: string;
+  product?: string;
 };
 
 export enum FILTER_PARAM_TYPES {

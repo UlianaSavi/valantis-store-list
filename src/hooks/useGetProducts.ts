@@ -34,6 +34,62 @@ export const useGetProducts = () => {
     body: JSON.stringify(body),
   };
 
+  const getProductsIds = async () => {
+    try {
+      const response = await fetch(API_URL, settings);
+      const result: { result: string[] } = await response.json();
+      const filteredResult = Array.from(new Set(result.result)); // filtering duplicates in IDs
+      setProductsIds(filteredResult);
+      setActionType(API_ACTION_TYPES.get_items);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Catch error!');
+        console.log('Error name ---> ', error.name);
+        console.log('Error message ---> ', error.message);
+        console.log(
+          'The request has been sent again. This only works once - if the server returns an error again, reload the page',
+        );
+        // TODO: повторение запроса
+      }
+    }
+  };
+
+  const getProducts = async () => {
+    try {
+      const response = await fetch(API_URL, settings);
+      const data: { result: IProduct[] } = await response.json();
+      setProducts(data.result);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Catch error!');
+        console.log('Error name ---> ', error.name);
+        console.log('Error message ---> ', error.message);
+        console.log(
+          'The request has been sent again. This only works once - if the server returns an error again, reload the page',
+        );
+        // TODO: повторение запроса
+      }
+    }
+  };
+
+  const filter = async () => {
+    try {
+      const response = await fetch(API_URL, settings);
+      const data: { result: string[] } = await response.json();
+      setProductsIds(data.result);
+      setActionType(API_ACTION_TYPES.get_items); // get products by filtered ids
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Catch error!');
+        console.log('Error name ---> ', error.name);
+        console.log('Error message ---> ', error.message);
+        console.log(
+          'The request has been sent again. This only works once - if the server returns an error again, reload the page',
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     body = {
       action: actionType,
@@ -42,22 +98,10 @@ export const useGetProducts = () => {
   }, [actionType, params]);
 
   useEffect(() => {
-    console.log('Getting data first time');
-    try {
-      (async () => {
-        const response = await fetch(API_URL, settings);
-        const idsArr: { result: string[] } = await response.json();
-        const filteredIdsArr = Array.from(new Set(idsArr.result)); // filtering duplicates in IDs
-        setProductsIds(filteredIdsArr);
-        setActionType(API_ACTION_TYPES.get_items);
-      })();
-    } catch (error) {
-      console.log('Error:', error);
-    }
+    getProductsIds();
   }, []);
 
   useEffect(() => {
-    console.log('get_items');
     if (actionType === API_ACTION_TYPES.get_items) {
       setParams({
         offset: OFFSET,
@@ -65,42 +109,23 @@ export const useGetProducts = () => {
         ids: productsIds,
       });
       if (productsIds) {
-        try {
-          (async () => {
-            const response = await fetch(API_URL, settings);
-            const data: { result: IProduct[] } = await response.json();
-            setProducts(data.result);
-          })();
-        } catch (error) {
-          console.log('Error:', error);
-        }
+        getProducts();
       }
     }
   }, [actionType]);
 
   useEffect(() => {
-    try {
-      (async () => {
-        const search = searchParams.get('search') || '';
-        const type = search.split(':')[0] || '';
-        const value = search.split(':')[1] || '';
-        if (type.length && value.length) {
-          console.log('type', type);
-          console.log('value', value);
-          setActionType(API_ACTION_TYPES.filter);
-          setParams({
-            [type]: value,
-          });
-        }
-        if (actionType === API_ACTION_TYPES.filter) {
-          const response = await fetch(API_URL, settings);
-          const data: { result: string[] } = await response.json();
-          setProductsIds(data.result);
-          setActionType(API_ACTION_TYPES.get_items); // get products by filtered ids
-        }
-      })();
-    } catch (error) {
-      console.log('Error:', error);
+    const search = searchParams.get('search') || '';
+    const type = search.split(':')[0] || '';
+    const value = search.split(':')[1] || '';
+    if (type.length && value.length) {
+      setActionType(API_ACTION_TYPES.filter);
+      setParams({
+        [type]: value,
+      });
+    }
+    if (actionType === API_ACTION_TYPES.filter) {
+      filter();
     }
   }, [searchParams]);
 
