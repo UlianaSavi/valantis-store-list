@@ -1,10 +1,8 @@
 import './ListOfData.css';
-import { useGetProducts } from '../../hooks/useGetProducts';
+import { IProduct } from '../../constants';
 
-export const ListOfData = () => {
-  const { products } = useGetProducts();
-
-  if (!products.length) {
+export const ListOfData = (props: { products: IProduct[] }) => {
+  if (!props.products.length) {
     return (
       <div className="list">
         <p>No data. Find something to see results.</p>
@@ -15,7 +13,7 @@ export const ListOfData = () => {
   return (
     <>
       <ul className="list">
-        {products.map((product, i) => (
+        {props.products.map((product, i) => (
           <li className="card" key={`${product.product}__${product.id}?${i}`}>
             <div className="card__text-wrap">
               <div className="card__text">

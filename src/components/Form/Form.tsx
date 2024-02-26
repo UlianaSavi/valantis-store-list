@@ -1,14 +1,22 @@
 import { useState, ChangeEvent } from 'react';
 import './Form.css';
 import { useSearchParams } from 'react-router-dom';
-import { FILTER_PARAM_TYPES, MIN_SEARCH_LEN } from '../../constants';
+import {
+  API_ACTION_TYPES,
+  FILTER_PARAM_TYPES,
+  MIN_SEARCH_LEN,
+} from '../../constants';
+import { useGetProducts } from '../../hooks/useGetProducts';
 
 export const Form = () => {
   const [query, setQuery] = useState<string>('');
   const [searchType, setSearchType] = useState<FILTER_PARAM_TYPES>(
     FILTER_PARAM_TYPES.none,
   );
-  const [, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const actionType = API_ACTION_TYPES.filter;
+  const { filter } = useGetProducts(actionType);
 
   const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -17,6 +25,14 @@ export const Form = () => {
       searchType !== FILTER_PARAM_TYPES.none
     ) {
       setSearchParams({ search: `${searchType}:${query}` });
+      const search = searchParams.get('search') || '';
+      const type = search.split(':')[0] || '';
+      const value = search.split(':')[1] || '';
+      if (type.length && value.length) {
+        filter({
+          [type]: value,
+        });
+      }
     }
   };
 

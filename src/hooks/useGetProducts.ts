@@ -1,133 +1,38 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   API_ACTION_TYPES,
   API_PARAMS_TYPES,
-  API_URL,
-  HEADERS,
   IProduct,
   LIMIT,
   OFFSET,
 } from '../constants';
-import { useSearchParams } from 'react-router-dom';
+import {
+  filter as filterWithApi,
+  getProducts as getProductsFromApi,
+} from '../api';
 
-export const useGetProducts = () => {
-  const [productsIds, setProductsIds] = useState<string[]>([]);
+export const useGetProducts = (actionType: API_ACTION_TYPES) => {
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [actionType, setActionType] = useState<API_ACTION_TYPES>(
-    API_ACTION_TYPES.get_ids,
-  );
-  const [params, setParams] = useState<API_PARAMS_TYPES>({
+  const [paramsForReq, setParamsForReq] = useState<API_PARAMS_TYPES>({
     offset: OFFSET,
     limit: LIMIT,
   });
 
-  const [searchParams] = useSearchParams();
-
-  let body = {
+  const reqBody = {
     action: actionType,
-    params: params,
-  };
-
-  const settings = {
-    method: 'POST',
-    headers: HEADERS,
-    body: JSON.stringify(body),
-  };
-
-  const getProductsIds = async () => {
-    try {
-      const response = await fetch(API_URL, settings);
-      const result: { result: string[] } = await response.json();
-      const filteredResult = Array.from(new Set(result.result)); // filtering duplicates in IDs
-      setProductsIds(filteredResult);
-      setActionType(API_ACTION_TYPES.get_items);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log('Catch error!');
-        console.log('Error name ---> ', error.name);
-        console.log('Error message ---> ', error.message);
-        console.log(
-          'The request has been sent again. This only works once - if the server returns an error again, reload the page',
-        );
-        // TODO: повторение запроса
-      }
-    }
+    params: paramsForReq,
   };
 
   const getProducts = async () => {
-    try {
-      const response = await fetch(API_URL, settings);
-      const data: { result: IProduct[] } = await response.json();
-      setProducts(data.result);
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log('Catch error!');
-        console.log('Error name ---> ', error.name);
-        console.log('Error message ---> ', error.message);
-        console.log(
-          'The request has been sent again. This only works once - if the server returns an error again, reload the page',
-        );
-        // TODO: повторение запроса
-      }
-    }
+    const res = (await getProductsFromApi(reqBody)) as IProduct[];
+    setProducts(res);
   };
 
-  const filter = async () => {
-    try {
-      const response = await fetch(API_URL, settings);
-      const data: { result: string[] } = await response.json();
-      setProductsIds(data.result);
-      setActionType(API_ACTION_TYPES.get_items); // get products by filtered ids
-    } catch (error) {
-      if (error instanceof Error) {
-        console.log('Catch error!');
-        console.log('Error name ---> ', error.name);
-        console.log('Error message ---> ', error.message);
-        console.log(
-          'The request has been sent again. This only works once - if the server returns an error again, reload the page',
-        );
-      }
-    }
+  const filter = async (newSearchParams: API_PARAMS_TYPES) => {
+    setParamsForReq(newSearchParams); // TODO: по идее вот это не должно тут лежать тк если вызвать тут оно не успеет обновить paramsForReq перед filterWithApi
+    const res = (await filterWithApi(reqBody)) as IProduct[];
+    setProducts(res);
   };
 
-  useEffect(() => {
-    body = {
-      action: actionType,
-      params: params,
-    };
-  }, [actionType, params]);
-
-  useEffect(() => {
-    getProductsIds();
-  }, []);
-
-  useEffect(() => {
-    if (actionType === API_ACTION_TYPES.get_items) {
-      setParams({
-        offset: OFFSET,
-        limit: LIMIT,
-        ids: productsIds,
-      });
-      if (productsIds) {
-        getProducts();
-      }
-    }
-  }, [actionType]);
-
-  useEffect(() => {
-    const search = searchParams.get('search') || '';
-    const type = search.split(':')[0] || '';
-    const value = search.split(':')[1] || '';
-    if (type.length && value.length) {
-      setActionType(API_ACTION_TYPES.filter);
-      setParams({
-        [type]: value,
-      });
-    }
-    if (actionType === API_ACTION_TYPES.filter) {
-      filter();
-    }
-  }, [searchParams]);
-
-  return { products, setActionType };
+  return { products, getProducts, filter };
 };

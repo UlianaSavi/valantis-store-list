@@ -2,6 +2,8 @@ import md5 from 'md5';
 
 export const API_URL = 'http://api.valantis.store:40000';
 
+export const MAX_RETRY_NUM = 2;
+
 const CURR_MONTH =
   String(Number(new Date().getMonth() + 1)).length === 1
     ? `0${Number(new Date().getMonth() + 1)}`
@@ -35,7 +37,6 @@ export enum API_ACTION_TYPES {
   filter = 'filter',
   get_ids = 'get_ids',
   get_items = 'get_items',
-  get_fields = 'get_fields',
 }
 
 export type API_PARAMS_TYPES = {
@@ -64,3 +65,8 @@ export interface IProduct {
   price: number;
   product: string;
 }
+
+export type reqBody = {
+  action: API_ACTION_TYPES;
+  params: API_PARAMS_TYPES;
+};
