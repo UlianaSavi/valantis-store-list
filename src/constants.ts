@@ -25,6 +25,7 @@ export const OFFSET = 0;
 export const MIN_SEARCH_LEN = 3;
 
 export enum ROUTES {
+  start = '/react-app',
   empty = '/',
   welcome = '/welcome',
   home = '/home',

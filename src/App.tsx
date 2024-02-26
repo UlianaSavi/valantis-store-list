@@ -22,6 +22,10 @@ export const App = () => {
             path={ROUTES.empty}
             element={<Navigate to={ROUTES.welcome} replace={true} />}
           />
+          <Route
+            path={ROUTES.start}
+            element={<Navigate to={ROUTES.welcome} replace={true} />}
+          />
           <Route path={ROUTES.welcome} element={<Welcome />} />
           <Route path={ROUTES.home} element={<Home />} />
         </Routes>

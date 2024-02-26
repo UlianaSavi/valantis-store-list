@@ -11,3 +11,9 @@
     max-width: 100%;
     text-transform: uppercase;
 }
+
+#select {
+    border-radius: 5px;
+    padding: 2px 10px;
+    cursor: pointer;
+}

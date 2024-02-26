@@ -28,13 +28,6 @@ export const useGetProducts = () => {
     params: params,
   };
 
-  useEffect(() => {
-    body = {
-      action: actionType,
-      params: params,
-    };
-  }, [actionType, params]);
-
   const settings = {
     method: 'POST',
     headers: HEADERS,
@@ -42,26 +35,36 @@ export const useGetProducts = () => {
   };
 
   useEffect(() => {
+    body = {
+      action: actionType,
+      params: params,
+    };
+  }, [actionType, params]);
+
+  useEffect(() => {
+    console.log('Getting data first time');
     try {
       (async () => {
         const response = await fetch(API_URL, settings);
         const idsArr: { result: string[] } = await response.json();
-        setProductsIds(idsArr.result);
+        const filteredIdsArr = Array.from(new Set(idsArr.result)); // filtering duplicates in IDs
+        setProductsIds(filteredIdsArr);
         setActionType(API_ACTION_TYPES.get_items);
       })();
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Error:', error);
     }
   }, []);
 
   useEffect(() => {
+    console.log('get_items');
     if (actionType === API_ACTION_TYPES.get_items) {
       setParams({
         offset: OFFSET,
         limit: LIMIT,
         ids: productsIds,
       });
-      if (params.ids) {
+      if (productsIds) {
         try {
           (async () => {
             const response = await fetch(API_URL, settings);
@@ -69,7 +72,7 @@ export const useGetProducts = () => {
             setProducts(data.result);
           })();
         } catch (error) {
-          console.error('Error:', error);
+          console.log('Error:', error);
         }
       }
     }
@@ -82,13 +85,14 @@ export const useGetProducts = () => {
         const type = search.split(':')[0] || '';
         const value = search.split(':')[1] || '';
         if (type.length && value.length) {
+          console.log('type', type);
+          console.log('value', value);
           setActionType(API_ACTION_TYPES.filter);
           setParams({
             [type]: value,
           });
         }
         if (actionType === API_ACTION_TYPES.filter) {
-          // TODO: проверить работает ли фильтрация. По идее готова)
           const response = await fetch(API_URL, settings);
           const data: { result: string[] } = await response.json();
           setProductsIds(data.result);
@@ -96,7 +100,7 @@ export const useGetProducts = () => {
         }
       })();
     } catch (error) {
-      console.error('Error:', error);
+      console.log('Error:', error);
     }
   }, [searchParams]);
 

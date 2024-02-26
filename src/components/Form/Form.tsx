@@ -12,13 +12,22 @@ export const Form = () => {
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-    if (query.length >= MIN_SEARCH_LEN) {
+    if (
+      query.length >= MIN_SEARCH_LEN &&
+      searchType !== FILTER_PARAM_TYPES.none
+    ) {
       setSearchParams({ search: `${searchType}:${query}` });
     }
   };
 
   const onSearchTypeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSearchType(e.target.value as FILTER_PARAM_TYPES);
+    if (
+      query.length >= MIN_SEARCH_LEN &&
+      searchType !== FILTER_PARAM_TYPES.none
+    ) {
+      setSearchParams({ search: `${searchType}:${query}` });
+    }
   };
 
   return (
@@ -27,7 +36,6 @@ export const Form = () => {
         className="form__input input"
         type="text"
         placeholder="Enter repo name for search"
-        value={query}
         onChange={onChange}
       />
       <label htmlFor="select">Choose field searching type:</label>
