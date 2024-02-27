@@ -55,6 +55,12 @@ export type API_PARAMS_TYPES = {
   product?: string;
 };
 
+export type API_FILTER_TYPES = {
+  price?: number;
+  brand?: string;
+  product?: string;
+};
+
 export enum FILTER_PARAM_TYPES {
   none = '',
   price = 'price',

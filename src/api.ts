@@ -7,32 +7,77 @@ import {
   reqBody,
 } from './constants';
 
-export const getProducts = (body: reqBody) =>
-  apiWithRetries(getProductsReq, body, MAX_RETRY_NUM);
+type ApiCall<Params, Response> = (props: Params) => Promise<Response | Error>;
 
-export const filter = (body: reqBody) =>
-  apiWithRetries(filterReq, body, MAX_RETRY_NUM);
+export const getProducts = async (body: reqBody) => {
+  try {
+    const res = await apiWithRetries({
+      requestFn: getProductsReq,
+      reqBody: body,
+      retries: MAX_RETRY_NUM,
+    });
 
-export const getProductsIds = (body: reqBody) =>
-  apiWithRetries(getProductsIdsReq, body, MAX_RETRY_NUM);
-
-const apiWithRetries = async (
-  requestFn: (body: reqBody) => Promise<Error | IProduct[] | string[]>,
-  reqBody: reqBody,
-  retries: number,
-): Promise<IProduct[] | string[]> => {
-  let i = 0;
-  let res: Error | IProduct[] | string[] = [];
-  while (i < retries && (res instanceof Error || res.length === 0)) {
-    i++;
-    const data = await requestFn(reqBody);
-    res = data;
-  }
-  if (res instanceof Error && i >= retries) {
-    console.error('Too many retries');
+    return res as IProduct[];
+  } catch (error) {
     return [];
   }
-  return res as IProduct[] | string[];
+};
+
+export const filter = async (body: reqBody) => {
+  try {
+    const res = await apiWithRetries({
+      requestFn: filterReq,
+      reqBody: body,
+      retries: MAX_RETRY_NUM,
+    });
+
+    return res as IProduct[];
+  } catch (error) {
+    return [];
+  }
+};
+
+export const getProductsIds = async (body: reqBody) => {
+  try {
+    const res = await apiWithRetries({
+      requestFn: getProductsIdsReq,
+      reqBody: body,
+      retries: MAX_RETRY_NUM,
+    });
+
+    return res as string[];
+  } catch (error) {
+    return [];
+  }
+};
+
+type WithRetries<Params, Response> = {
+  requestFn: ApiCall<Params, Response>;
+  reqBody: Params;
+  retries: number;
+};
+type WithRetriesFn = <Params, Response>(
+  props: WithRetries<Params, Response>,
+) => ReturnType<ApiCall<Params, Response>>;
+
+const apiWithRetries: WithRetriesFn = async ({
+  requestFn,
+  reqBody,
+  retries,
+}) => {
+  let i = 0;
+  while (i < retries - 1) {
+    i++;
+    try {
+      const data = await requestFn(reqBody);
+      return data;
+    } catch (error) {
+      console.error('Too many retries');
+      throw new Error();
+    }
+  }
+  const data = await requestFn(reqBody);
+  return data;
 };
 
 const req = {
@@ -45,10 +90,12 @@ const getProductsReq = async (body: reqBody) => {
   if (!body.params.ids) {
     delete body.params.ids;
     const ids = await getProductsIds(body);
-    body.params.ids = ids as string[];
-    body.action = API_ACTION_TYPES.get_items;
-    const bodyToStr = JSON.stringify(body);
-    req.body = bodyToStr; // set IDS and action for getProducts
+    body = {
+      action: API_ACTION_TYPES.get_items,
+      params: {
+        ids: ids as string[],
+      },
+    }; // set IDS and action for getProducts
   }
   try {
     req.body = JSON.stringify(body);
