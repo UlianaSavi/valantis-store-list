@@ -13,7 +13,7 @@ export const getProducts = (body: reqBody) =>
 export const filter = (body: reqBody) =>
   apiWithRetries(filterReq, body, MAX_RETRY_NUM);
 
-const getProductsIds = (body: reqBody) =>
+export const getProductsIds = (body: reqBody) =>
   apiWithRetries(getProductsIdsReq, body, MAX_RETRY_NUM);
 
 const apiWithRetries = async (
@@ -51,8 +51,9 @@ const getProductsReq = async (body: reqBody) => {
     req.body = bodyToStr; // set IDS and action for getProducts
   }
   try {
+    req.body = JSON.stringify(body);
     const response = await fetch(API_URL, req);
-    const data: { result: IProduct[] } = await response.json(); // вот по моему сюда не попадает что-то что нужно и выкидывает 400 на попытке запроса - разберись
+    const data: { result: IProduct[] } = await response.json();
     return data.result;
   } catch (error) {
     if (error instanceof Error) {
@@ -83,8 +84,13 @@ const filterReq = async (body: reqBody) => {
   req.body = JSON.stringify(body);
   try {
     const response = await fetch(API_URL, req);
-    const data: { result: string[] } = await response.json();
-    return data.result;
+    const ids: { result: string[] } = await response.json();
+    body.params = {
+      ids: ids.result as string[],
+    };
+    body.action = API_ACTION_TYPES.get_items;
+    const data = await getProducts(body);
+    return data;
   } catch (error) {
     if (error instanceof Error) {
       logError(error);

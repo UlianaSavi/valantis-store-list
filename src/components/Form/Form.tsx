@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useEffect } from 'react';
 import './Form.css';
 import { useSearchParams } from 'react-router-dom';
 import {
@@ -13,45 +13,45 @@ export const Form = () => {
   const [searchType, setSearchType] = useState<FILTER_PARAM_TYPES>(
     FILTER_PARAM_TYPES.none,
   );
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [, setSearchParams] = useSearchParams();
 
   const actionType = API_ACTION_TYPES.filter;
-  const { filter } = useGetProducts(actionType);
+  const { setFilterParams } = useGetProducts(actionType);
 
   const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
-    if (
-      query.length >= MIN_SEARCH_LEN &&
-      searchType !== FILTER_PARAM_TYPES.none
-    ) {
-      setSearchParams({ search: `${searchType}:${query}` });
-      const search = searchParams.get('search') || '';
-      const type = search.split(':')[0] || '';
-      const value = search.split(':')[1] || '';
-      if (type.length && value.length) {
-        filter({
-          [type]: value,
-        });
-      }
-    }
+    setQuery(e.currentTarget.value);
   };
 
   const onSearchTypeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     setSearchType(e.target.value as FILTER_PARAM_TYPES);
+  };
+
+  useEffect(() => {
+    setSearchParams('');
+  }, []);
+
+  useEffect(() => {
     if (
       query.length >= MIN_SEARCH_LEN &&
       searchType !== FILTER_PARAM_TYPES.none
     ) {
       setSearchParams({ search: `${searchType}:${query}` });
+      if (searchType.length && query.length) {
+        const val =
+          searchType === FILTER_PARAM_TYPES.price ? Number(query) : query;
+        setFilterParams({
+          [searchType]: val,
+        });
+      }
     }
-  };
+  }, [searchType, query]);
 
   return (
     <form className="form">
       <input
         className="form__input input"
         type={searchType === FILTER_PARAM_TYPES.price ? 'number' : 'text'}
-        placeholder="Enter repo name for search"
+        placeholder="Write for search..."
         onChange={onSearchChange}
       />
       <label htmlFor="select">Choose field searching type:</label>

@@ -2,7 +2,7 @@ import md5 from 'md5';
 
 export const API_URL = 'http://api.valantis.store:40000';
 
-export const MAX_RETRY_NUM = 2;
+export const MAX_RETRY_NUM = 1;
 
 const CURR_MONTH =
   String(Number(new Date().getMonth() + 1)).length === 1
@@ -23,6 +23,7 @@ export const HEADERS = {
 };
 
 export const LIMIT = 50; // max item getting per one request to the api
+export const START_PAGE_NUM = 1;
 export const OFFSET = 0;
 export const MIN_SEARCH_LEN = 3;
 
@@ -34,6 +35,7 @@ export enum ROUTES {
 }
 
 export enum API_ACTION_TYPES {
+  none = 'none',
   filter = 'filter',
   get_ids = 'get_ids',
   get_items = 'get_items',

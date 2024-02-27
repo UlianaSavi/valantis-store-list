@@ -81,7 +81,3 @@ body {
 .link {
   color: var(--dark-grey);
 }
-
-.interceptor {
-  height: 10px;
-}

@@ -1,0 +1,9 @@
+.pagination {
+    height: 20px;
+    display: flex;
+    width: auto;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow: auto;
+    padding: 10px 20px;
+}

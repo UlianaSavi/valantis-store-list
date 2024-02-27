@@ -35,7 +35,6 @@ export const ListOfData = (props: { products: IProduct[] }) => {
             </div>
           </li>
         ))}
-        {/* <div ref={containerRef} className="interceptor"></div> */}
       </ul>
     </>
   );
