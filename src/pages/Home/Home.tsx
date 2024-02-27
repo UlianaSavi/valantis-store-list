@@ -8,7 +8,7 @@ import { Pagination } from '../../components/Pagination/Pagination';
 
 export const Home = () => {
   const actionType = API_ACTION_TYPES.get_ids;
-  const { products, getProducts } = useGetProducts(actionType);
+  const { products, getProducts, allIdsLen } = useGetProducts(actionType);
 
   useEffect(() => {
     getProducts();
@@ -18,7 +18,7 @@ export const Home = () => {
     <div className="home">
       <Form />
       <ListOfData products={products} />
-      <Pagination />
+      <Pagination allIdsLen={allIdsLen} />
     </div>
   );
 };

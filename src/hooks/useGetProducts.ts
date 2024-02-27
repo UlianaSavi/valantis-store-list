@@ -11,16 +11,14 @@ import {
   getProductsIds,
   getProducts as getProductsFromApi,
 } from '../api';
-import { usePagination } from './usePagination';
 
 export const useGetProducts = (actionType: API_ACTION_TYPES) => {
   const [products, setProducts] = useState<IProduct[]>([]);
+  const [allIdsLen, setAllIdsLen] = useState<number>(0);
   const [paramsForReq, setParamsForReq] = useState<API_PARAMS_TYPES>({
     offset: OFFSET,
     limit: LIMIT,
   });
-
-  const { paginate } = usePagination();
 
   const reqBody = {
     action: actionType,
@@ -35,11 +33,14 @@ export const useGetProducts = (actionType: API_ACTION_TYPES) => {
   }, [paramsForReq]);
 
   const getProducts = async () => {
-    reqBody.params.limit = 0;
-    const ids = (await getProductsIds(reqBody)) as string[];
-    const paginateRes = paginate(ids.length);
-    reqBody.params.limit = LIMIT;
-    reqBody.params.offset = paginateRes.currOffset;
+    const reqBodyAllIds = {
+      action: API_ACTION_TYPES.get_ids,
+      params: {
+        offset: OFFSET,
+      },
+    };
+    const allIds = (await getProductsIds(reqBodyAllIds)) as string[]; // get all Ids for pagination
+    setAllIdsLen(allIds.length);
     const res = (await getProductsFromApi(reqBody)) as IProduct[];
     setProducts(res);
   };
@@ -53,5 +54,5 @@ export const useGetProducts = (actionType: API_ACTION_TYPES) => {
     setProducts(res); // TODO: почему не обновился ui после фильтрации - найти и починить
   };
 
-  return { products, getProducts, setFilterParams };
+  return { products, getProducts, setFilterParams, allIdsLen };
 };

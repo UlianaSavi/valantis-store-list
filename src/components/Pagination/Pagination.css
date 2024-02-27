@@ -1,9 +1,36 @@
 .pagination {
-    height: 20px;
+    height: 40px;
     display: flex;
+    justify-content: space-between;
     width: auto;
     max-width: 1200px;
     margin: 0 auto;
-    overflow: auto;
     padding: 10px 20px;
+}
+
+.arrow {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+    font-size: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--dark-grey);
+    cursor: pointer;
+}
+
+.arrow-left::before {
+    content: '\2190';
+}
+
+.arrow-right::before {
+    content: '\2192';
+}
+
+.arrow-disabled {
+    cursor: not-allowed;
+    color: var(--lite-grey);
+    background: var(--very-lite-grey);
+    border: var(--lite-grey);
 }

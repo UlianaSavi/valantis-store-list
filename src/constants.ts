@@ -27,6 +27,11 @@ export const START_PAGE_NUM = 1;
 export const OFFSET = 0;
 export const MIN_SEARCH_LEN = 3;
 
+export enum PAGINATION_ARROW_TYPES {
+  left = 'left',
+  right = 'right',
+}
+
 export enum ROUTES {
   start = '/react-app',
   empty = '/',
