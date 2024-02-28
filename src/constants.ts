@@ -33,7 +33,7 @@ export enum PAGINATION_ARROW_TYPES {
 }
 
 export enum ROUTES {
-  start = '/react-app',
+  start = '/valantis-store-list',
   empty = '/',
   welcome = '/welcome',
   home = '/home',

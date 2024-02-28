@@ -83,6 +83,7 @@ const apiWithRetries: WithRetriesFn = async ({
 const req = {
   method: 'POST',
   headers: HEADERS,
+  referrerPolicy: 'unsafe-url' as const,
   body: '',
 };
 

@@ -16,7 +16,7 @@ export const App = () => {
         <h3 className="title">Service for work with Valantis API</h3>
       </header>
 
-      <Router>
+      <Router basename="valantis-store-list">
         <Routes>
           <Route
             path={ROUTES.empty}
