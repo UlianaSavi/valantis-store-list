@@ -4,8 +4,8 @@ import { IProduct } from '../../constants';
 export const ListOfData = (props: { products: IProduct[] }) => {
   if (!props.products.length) {
     return (
-      <div className="list">
-        <p>No data. Find something to see results.</p>
+      <div className="list__nothing">
+        No data. Find something to see results.
       </div>
     );
   }
