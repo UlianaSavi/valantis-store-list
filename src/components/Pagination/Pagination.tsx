@@ -31,9 +31,11 @@ export const Pagination = ({
         onClick={onRightClick}
         className={
           'arrow arrow-right ' +
-          (numberPages !== currentPage ? 'arrow-active ' : 'arrow-disabled ')
+          (numberPages !== currentPage && numberPages !== 0
+            ? 'arrow-active '
+            : 'arrow-disabled ')
         }
-        disabled={numberPages === currentPage}
+        disabled={numberPages === currentPage || numberPages === 0}
       ></button>
     </div>
   );
