@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from 'react';
 import {
   API_ACTION_TYPES,
@@ -17,10 +16,6 @@ export const useGetProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
-  const [paramsForReq, setParamsForReq] = useState<API_PARAMS_TYPES>({
-    offset: OFFSET,
-    limit: LIMIT,
-  });
 
   const getData = async (
     params: API_PARAMS_TYPES = { offset: OFFSET, limit: LIMIT },
@@ -30,7 +25,6 @@ export const useGetProducts = () => {
     }
 
     setLoading(true);
-    setParamsForReq({ ...params });
 
     if (params?.offset === 0) {
       const allIds = await getProductsIds({
@@ -42,17 +36,15 @@ export const useGetProducts = () => {
       setTotalCount(allIds.length);
     }
 
-    if (!(params?.limit && params?.offset)) {
-      // const res = (await filterWithApi({
-      //   action: API_ACTION_TYPES.filter,
-      //   params: {
-      //     limit: LIMIT,
-      //     offset: paramsForReq.offset,
-      //   },
-      // })) as IProduct[];
-      // setProducts(res);
-      // setLoading(false);
-      // return;
+    if (!params?.limit) {
+      const res = await filterWithApi({
+        action: API_ACTION_TYPES.filter,
+        params,
+      });
+      setProducts(res);
+      setTotalCount(res.length);
+      setLoading(false);
+      return;
     }
 
     const res = await getProductsFromApi({

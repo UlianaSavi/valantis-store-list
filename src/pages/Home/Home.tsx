@@ -12,10 +12,6 @@ export const Home = () => {
   const pagesSize = Math.ceil(totalCount / LIMIT);
   const currentPage = Math.abs(Math.ceil(currOffset / LIMIT));
 
-  const getProductsWithOffsetCallback = (offset: number) => {
-    getData({ offset, limit: LIMIT });
-  };
-
   const changePageEvent = (type: PAGINATION_ARROW_TYPES) => {
     const offset = Math.abs(
       type === PAGINATION_ARROW_TYPES.left
@@ -24,7 +20,7 @@ export const Home = () => {
     );
     setCurrOffset(offset);
     if (currOffset !== 0) {
-      getProductsWithOffsetCallback(offset);
+      getData({ offset: offset, limit: LIMIT });
     }
   };
 
@@ -34,7 +30,7 @@ export const Home = () => {
 
   return (
     <div className="home">
-      <Form />
+      <Form getData={getData} />
       <ListOfData products={products} />
       <Pagination
         numberPages={pagesSize}

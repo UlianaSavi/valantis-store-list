@@ -1,17 +1,22 @@
 import { useState, ChangeEvent, useEffect } from 'react';
 import './Form.css';
 import { useSearchParams } from 'react-router-dom';
-import { FILTER_PARAM_TYPES, MIN_SEARCH_LEN } from '../../constants';
-import { useGetProducts } from '../../hooks/useGetProducts';
+import {
+  API_PARAMS_TYPES,
+  FILTER_PARAM_TYPES,
+  MIN_SEARCH_LEN,
+} from '../../constants';
 
-export const Form = () => {
+type FormProps = {
+  getData: (params?: API_PARAMS_TYPES) => Promise<void>;
+};
+
+export const Form = ({ getData }: FormProps) => {
   const [query, setQuery] = useState<string>('');
   const [searchType, setSearchType] = useState<FILTER_PARAM_TYPES>(
     FILTER_PARAM_TYPES.none,
   );
   const [, setSearchParams] = useSearchParams();
-
-  const { getData } = useGetProducts();
 
   const onSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.currentTarget.value);
