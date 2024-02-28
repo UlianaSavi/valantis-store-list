@@ -5,9 +5,10 @@ import { useGetProducts } from '../../hooks/useGetProducts';
 import './Home.css';
 import { Pagination } from '../../components/Pagination/Pagination';
 import { LIMIT, PAGINATION_ARROW_TYPES } from '../../constants';
+import loader from '../../assets/loader.gif';
 
 export const Home = () => {
-  const { products, getData, totalCount } = useGetProducts();
+  const { products, getData, totalCount, loading } = useGetProducts();
   const [currOffset, setCurrOffset] = useState(LIMIT);
   const pagesSize = Math.ceil(totalCount / LIMIT);
   const currentPage = Math.abs(Math.ceil(currOffset / LIMIT));
@@ -31,7 +32,13 @@ export const Home = () => {
   return (
     <div className="home">
       <Form getData={getData} />
-      <ListOfData products={products} />
+      {loading ? (
+        <div className="loader">
+          <img src={loader} alt="Loading..." />
+        </div>
+      ) : (
+        <ListOfData products={products} />
+      )}
       <Pagination
         numberPages={pagesSize}
         currentPage={currentPage}

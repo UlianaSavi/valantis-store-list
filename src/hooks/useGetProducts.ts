@@ -33,7 +33,7 @@ export const useGetProducts = () => {
           offset: OFFSET,
         },
       }); // get all Ids for pagination
-      setTotalCount(allIds.length);
+      setTotalCount(allIds.length || 0);
     }
 
     if (!params?.limit) {
@@ -42,7 +42,7 @@ export const useGetProducts = () => {
         params,
       });
       setProducts(res);
-      setTotalCount(res.length);
+      setTotalCount(res.length || 0);
       setLoading(false);
       return;
     }
@@ -59,5 +59,6 @@ export const useGetProducts = () => {
     products,
     totalCount,
     getData,
+    loading,
   };
 };
