@@ -1,5 +1,7 @@
 # valantis-store-list
 React SPA application using for work with Valantis store API.
+![изображение](https://github.com/UlianaSavi/valantis-store-list/assets/105851981/aa5d87fe-d555-4a01-a375-364e6059502e)
+
 
 ## Development server
 
