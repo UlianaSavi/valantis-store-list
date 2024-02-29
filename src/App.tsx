@@ -5,7 +5,6 @@ import {
   BrowserRouter as Router,
   Routes,
 } from 'react-router-dom';
-import { Welcome } from './pages/Welcome';
 import { Home } from './pages/Home';
 import { ROUTES } from './constants';
 
@@ -20,13 +19,12 @@ export const App = () => {
         <Routes>
           <Route
             path={ROUTES.empty}
-            element={<Navigate to={ROUTES.welcome} replace={true} />}
+            element={<Navigate to={ROUTES.home} replace={true} />}
           />
           <Route
             path={ROUTES.start}
-            element={<Navigate to={ROUTES.welcome} replace={true} />}
+            element={<Navigate to={ROUTES.home} replace={true} />}
           />
-          <Route path={ROUTES.welcome} element={<Welcome />} />
           <Route path={ROUTES.home} element={<Home />} />
         </Routes>
       </Router>

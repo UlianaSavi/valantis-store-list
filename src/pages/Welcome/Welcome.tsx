@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import './Welcome.css';
 import { ROUTES } from '../../constants';
 
+// It was a welcome page, but HR asked to remove it - so it's not used, but can be returned.
 export const Welcome = () => {
   const navigate = useNavigate();
   const goToHomePage = () => {
